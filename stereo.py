@@ -11,7 +11,7 @@ if not os.path.exists(pipe_path)
     
 
 print("Starting Recording")
-subprocess.run(['arecord -D plughw:1 -c2 -r 48000 -f S32_LE -t raw -V stereo -v /tmp/audio_pipe'])
+subprocess.run([["arecord", "-D", "plughw:1", "-c2", "-r", "48000", "-f", "S32_LE", "-t", "raw", "-V", "stereo", "-v", "/tmp/audio_pipe"])
 
 chunk_size = 8192
 fig, axs = plt.subplots(2, sharex=True)
