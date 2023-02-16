@@ -21,6 +21,15 @@ subprocess.Popen(["arecord", "-D", "plughw:1", "-c2", "-r", "48000", "-f", "S32_
 chunk_size = 8192
 fig, axs = plt.subplots(2, sharex=True)
 
+#init decision alg variables
+threshold = 0
+timeSinceLast = 0
+noiseSlope = 0
+totalNoise = 0
+sampleNum = 0
+MAX_THRESH_PERIOD = 3
+SHARP = 10
+
 with open("/tmp/audio_pipe", "rb") as f:
     while True:
         print("\/")
@@ -31,9 +40,35 @@ with open("/tmp/audio_pipe", "rb") as f:
        
         #decision alg goes here
 
-        #plot out the information
-        axs[0].clear()
-        axs[0].plot(left_channel)
-        axs[1].clear()
-        axs[1].plot(right_channel)
-        plt.pause(0.01)
+        #get average sound FIX
+        avg_sound = (left_channel * right_channel) /2
+        
+        #if the audio value is lower than threshold, ignore
+        for x in avg_sound:
+            if x > threshold:
+                #time since last noise - if longer than threshold, lower threshold
+                if timeSinceLast > MAX_THRESH_PERIOD:
+                    threshold -= 1
+                
+                #if the audio value is extremely sharp, color differently
+                #plot out the information
+                #use phase-angle to get the direction of the sound
+                if noiseSlope >= 10:
+                    axs[0].clear()
+                    axs[0].plot(left_channel, color = "red")
+                    axs[1].clear()
+                    axs[1].plot(right_channel, color = "red")
+                    plt.pause(0.01)
+                else:
+                    axs[0].clear()
+                    axs[0].plot(left_channel, color="green")
+                    axs[1].clear()
+                    axs[1].plot(right_channel, color="green")
+                    plt.pause(0.01)
+            
+            totalNoise += x
+            sampleNum += 1
+            noiseSlope = totalNoise / sampleNum
+
+        timeSinceLast += 0.01
+        
