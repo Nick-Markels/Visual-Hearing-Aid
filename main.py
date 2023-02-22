@@ -24,6 +24,17 @@ threading.Thread(target=start_recording).start()
 chunk_size = 8192
 fig, axs = plt.subplots(2, sharex=True)
 
+#init decision alg variables
+threshold = 0
+timeSinceLast = 0
+noiseSlope = 0
+totalNoise = 0
+sampleNum = 0
+MAX_THRESH_PERIOD = 3
+SHARP = 10
+DEC_VAL = 1
+TIME_LIT = 0.01
+
 with open("/tmp/audio_pipe", "rb") as f:
     while True:
         print("\/")
