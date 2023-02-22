@@ -34,6 +34,7 @@ MAX_THRESH_PERIOD = 3
 SHARP = 60
 DEC_VAL = 1
 TIME_LIT = 0.01
+SOUND_STABILIZER= 200000000000000
 
 with open("/tmp/audio_pipe", "rb") as f:
     while True:
@@ -42,11 +43,6 @@ with open("/tmp/audio_pipe", "rb") as f:
         audio_array = np.frombuffer(audio_data, dtype=np.int32)
         left_channel = audio_array[::2]
         right_channel = audio_array[1::2]
-       # axs[0].clear()
-       # axs[0].plot(left_channel)
-       # axs[1].clear()
-       # axs[1].plot(right_channel)
-       # plt.pause(0.01)
 
         #phase angle alg here
 
@@ -56,7 +52,7 @@ with open("/tmp/audio_pipe", "rb") as f:
         #get average sound FIX
         avg_right = np.average(right_channel)
         avg_left = np.average(left_channel)
-        avg_sound = (avg_right * avg_left) /200000000000000
+        avg_sound = (avg_right * avg_left) / SOUND_STABILIZER
         
         print(avg_sound)
         
@@ -80,11 +76,7 @@ with open("/tmp/audio_pipe", "rb") as f:
             axs[0].plot(left_channel, color="green")
             axs[1].clear()
             axs[1].plot(right_channel, color="green")
-            plt.pause(TIME_LIT)
-        
-        totalNoise += avg_sound
-        sampleNum += 1
-        noiseSlope = totalNoise / sampleNum
+            plt.pause(TIME_LIT) 
 
         timeSinceLast += TIME_LIT
         
