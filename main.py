@@ -31,7 +31,7 @@ noiseSlope = 0
 totalNoise = 0
 sampleNum = 0
 MAX_THRESH_PERIOD = 3
-SHARP = 10
+SHARP = 60
 DEC_VAL = 1
 TIME_LIT = 0.01
 
@@ -42,11 +42,11 @@ with open("/tmp/audio_pipe", "rb") as f:
         audio_array = np.frombuffer(audio_data, dtype=np.int32)
         left_channel = audio_array[::2]
         right_channel = audio_array[1::2]
-        axs[0].clear()
-        axs[0].plot(left_channel)
-        axs[1].clear()
-        axs[1].plot(right_channel)
-        plt.pause(0.01)
+       # axs[0].clear()
+       # axs[0].plot(left_channel)
+       # axs[1].clear()
+       # axs[1].plot(right_channel)
+       # plt.pause(0.01)
 
         #phase angle alg here
 
@@ -54,34 +54,37 @@ with open("/tmp/audio_pipe", "rb") as f:
         #decision alg goes here
 
         #get average sound FIX
-        avg_sound = (left_channel * right_channel) /2
+        avg_right = np.average(right_channel)
+        avg_left = np.average(left_channel)
+        avg_sound = (avg_right * avg_left) /200000000000000
+        
+        print(avg_sound)
         
         #if the audio value is lower than threshold, ignore
-        for x in avg_sound:
-            if x > threshold:
-                #time since last noise - if longer than threshold, lower threshold
-                if timeSinceLast > MAX_THRESH_PERIOD:
-                    threshold -= DEC_VAL
-                
-                #if the audio value is extremely sharp, color differently
-                #plot out the information
-                #use phase-angle to get the direction of the sound
-                if noiseSlope >= SHARP:
-                    axs[0].clear()
-                    axs[0].plot(left_channel, color = "red")
-                    axs[1].clear()
-                    axs[1].plot(right_channel, color = "red")
-                    plt.pause(TIME_LIT)
-                else:
-                    axs[0].clear()
-                    axs[0].plot(left_channel, color="green")
-                    axs[1].clear()
-                    axs[1].plot(right_channel, color="green")
-                    plt.pause(TIME_LIT)
-            
-            totalNoise += x
-            sampleNum += 1
-            noiseSlope = totalNoise / sampleNum
+        #for x in avg_sound
+        #time since last noise - if longer than threshold, lower threshold
+        if timeSinceLast > MAX_THRESH_PERIOD:
+            threshold -= DEC_VAL
+        
+        #if the audio value is extremely sharp, color differently
+        #plot out the information
+        #use phase-angle to get the direction of the sound
+        if avg_sound >= SHARP:
+            axs[0].clear()
+            axs[0].plot(left_channel, color = "red")
+            axs[1].clear()
+            axs[1].plot(right_channel, color = "red")
+            plt.pause(TIME_LIT)
+        else:
+            axs[0].clear()
+            axs[0].plot(left_channel, color="green")
+            axs[1].clear()
+            axs[1].plot(right_channel, color="green")
+            plt.pause(TIME_LIT)
+        
+        totalNoise += avg_sound
+        sampleNum += 1
+        noiseSlope = totalNoise / sampleNum
 
         timeSinceLast += TIME_LIT
         
