@@ -44,20 +44,25 @@ with open("/tmp/audio_pipe", "rb") as f:
         left_channel = audio_array[::2]
         right_channel = audio_array[1::2]
 
-        #phase angle alg here
+        #phase angle alg here - used for LED output decisions
+        
+        #get average sound
+        avg_right = np.average(right_channel)
+        avg_left = np.average(left_channel)
+        avg_sound = (avg_right * avg_left) / SOUND_STABILIZER
 
+        #this is currently just the pythagorean theorem
+        angle_dir = np.sqrt( np.sqare(avg_right) + np.square(avg_left))
 
         #decision alg goes here
 
-        #get average sound FIX
+        #get average sound
         avg_right = np.average(right_channel)
         avg_left = np.average(left_channel)
         avg_sound = (avg_right * avg_left) / SOUND_STABILIZER
         
         print(avg_sound)
         
-        #if the audio value is lower than threshold, ignore
-        #for x in avg_sound
         #time since last noise - if longer than threshold, lower threshold
         if timeSinceLast > MAX_THRESH_PERIOD:
             threshold -= DEC_VAL
@@ -72,11 +77,13 @@ with open("/tmp/audio_pipe", "rb") as f:
             axs[1].plot(right_channel, color = "red")
             plt.pause(TIME_LIT)
         else:
-            axs[0].clear()
-            axs[0].plot(left_channel, color="green")
-            axs[1].clear()
-            axs[1].plot(right_channel, color="green")
-            plt.pause(TIME_LIT) 
+            #if the audio value is lower than threshold, ignore
+            if avg_sound > threshold:
+                axs[0].clear()
+                axs[0].plot(left_channel, color="green")
+                axs[1].clear()
+                axs[1].plot(right_channel, color="green")
+                plt.pause(TIME_LIT) 
 
         timeSinceLast += TIME_LIT
         
