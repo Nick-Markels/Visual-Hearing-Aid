@@ -23,12 +23,21 @@ stream = p.open(
  
 print("* recording")
 
-frames = []
- 
+fig, axs = plt.subplots(RESPEAKER_CHANNELS, sharex=True, sharey=True, figsize=(8,8))
+fig.suptitle('Channels')
+
 for i in range(0, int(RESPEAKER_RATE / CHUNK * RECORD_SECONDS)):
     data = stream.read(CHUNK)
     audio_array = np.frombuffer(data, dtype=np.int16)
-    print("length " + audio_array.len())
-    frames.append(data)
+    audio_array = audio_array.reshape((CHUNK, RESPEAKER_CHANNELS))
+    
+    for j in range(RESPEAKER_CHANNELS):
+        axs[j].plot(audio_array[:, j], linewidth=0.5)
  
 print("* done recording")
+ 
+stream.stop_stream()
+stream.close()
+p.terminate()
+ 
+plt.show()
