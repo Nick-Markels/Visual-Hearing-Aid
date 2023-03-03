@@ -32,8 +32,24 @@ for i in range(0, int(RESPEAKER_RATE / CHUNK * RECORD_SECONDS)):
     data = stream.read(CHUNK)
     decoded = np.fromstring(data, "int16")
     decoded = decoded.string((8, CHUNK))
-    axs.clear
-    axs.plot(data.T)
+    split = np.split(decoded, 8)
+    ch1, ch2, ch3, ch4, ch5, ch6, ch7, ch8 = split
+    axs[0].clear()
+    axs[1].clear()
+    axs[2].clear()
+    axs[3].clear()
+    axs[5].clear()
+    axs[6].clear()
+    axs[6].clear()
+    axs[0].plot(ch1)
+    axs[1].plot(ch2)
+    axs[2].plot(ch3)
+    axs[3].plot(ch4)
+    axs[4].plot(ch5)
+    axs[5].plot(ch6)
+    axs[6].plot(ch7)
+    axs[7].plot(ch8)
+  
     plt.pause(0.0000625)
 
   
