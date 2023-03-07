@@ -23,8 +23,8 @@ stream = p.open(
 print("* recording")
 
 frames = []
-myArray = []
-myArray = np.array(myArray)
+
+myArray = np.zeros((8,1024))
 
 for i in range(0, int(RESPEAKER_RATE / CHUNK * RECORD_SECONDS)):
     data = stream.read(CHUNK)
