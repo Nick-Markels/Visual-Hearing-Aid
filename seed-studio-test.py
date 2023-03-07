@@ -24,14 +24,16 @@ stream = p.open(
 print("* recording")
 
 frames = [] 
+my_list = []
+my_list = np.array(my_list)
 
 for i in range(0, int(RESPEAKER_RATE / CHUNK * RECORD_SECONDS)):
     data = stream.read(CHUNK)
     # extract channel 0 data from 8 channels, if you want to extract channel 1, please change to [1::8]
     a = np.fromstring(data,dtype=np.int16)[0::8]
     frames.append(a.tostring())
+    my_list = np.append(my_list, a)
 
-frames = np.array(frames)
 print("* done recording")
 
 stream.stop_stream()
@@ -39,9 +41,9 @@ stream.close()
 p.terminate()
 
 fig, ax = plt.subplots(8)
-print("Shape of the data array: ", frames.shape)
-for i in range(frames.shape[0]):
-    ax.plot(frames[i], label="Channel {}".format(i+1))
+print("Shape of the data array: ", my_list.shape)
+for i in range(my_list.shape[0]):
+    ax.plot(my_list[i], label="Channel {}".format(i+1))
 
 fig.savefig("p.png")
 
