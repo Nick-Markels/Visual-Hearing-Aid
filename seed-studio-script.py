@@ -41,8 +41,9 @@ while True:
 
     tmp = np.vstack((ch0, ch1, ch2, ch3, ch4, ch5, ch6, ch7))
     #myArray = np.hstack((myArray, tmp))
-    # plot the entire array
+    myArray = tmp
+
     fig, axs = plt.subplots(8, sharex=True)
-    axs.plot(tmp.T)
-    plt.pause(0.001)
+    for i in range(8):
+        axs[i].plot(myArray[i])
 
