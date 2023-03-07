@@ -41,7 +41,7 @@ stream.close()
 p.terminate()
 
 fig, ax = plt.subplots(8)
-length3 = int(my_list.shape / RESPEAKER_CHANNELS)
+length3 = int(len(my_list)/ RESPEAKER_CHANNELS)
 print("Shape of the data array: ", my_list.shape)
 my_list = my_list.reshape((RESPEAKER_CHANNELS, length3))
 
