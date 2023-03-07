@@ -35,6 +35,7 @@ for i in range(0, int(RESPEAKER_RATE / CHUNK * RECORD_SECONDS)):
     my_list = np.append(my_list, a)
 
 print("* done recording")
+my_list = my_list.reshape((RESPEAKER_CHANNELS, CHUNK))
 
 stream.stop_stream()
 stream.close()
