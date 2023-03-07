@@ -37,7 +37,11 @@ stream.stop_stream()
 stream.close()
 p.terminate()
 
+fig, ax = plt.subplots(RESPEAKER_CHANNELS)
+for i in range(a.shape[0]):
+    ax.plot(a[i], label="Channel {}".format(i+1))
 
+fig.savefig("p.png")
 
 wf = wave.open(WAVE_OUTPUT_FILENAME, 'wb')
 wf.setnchannels(1)
