@@ -1,6 +1,7 @@
 import pyaudio
 import wave
 import numpy as np
+import matplotlib.pyplot as plt
 
 RESPEAKER_RATE = 16000
 RESPEAKER_CHANNELS = 8 
@@ -47,6 +48,12 @@ print("* done recording")
 stream.stop_stream()
 stream.close()
 p.terminate()
+
+# plot myArray
+fig, axs = plt.subplots(8, sharex=True)
+for i in range(8):
+    axs[i].plot(myArray[i])
+fig.savefig("PLOT.png")
 
 wf = wave.open(WAVE_OUTPUT_FILENAME, 'wb')
 wf.setnchannels(RESPEAKER_CHANNELS)
