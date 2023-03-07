@@ -44,6 +44,6 @@ while True:
     myArray = tmp
 
     fig, axs = plt.subplots(8, sharex=True)
-    for i in range(8):
-        axs[i].plot(myArray[i])
+    #for i in range(8):
+    axs[0].plot(myArray[0])
 
