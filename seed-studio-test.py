@@ -39,7 +39,7 @@ for i in range(0, int(RESPEAKER_RATE / CHUNK * RECORD_SECONDS)):
     ch6 = np.fromstring(data,dtype=np.int16)[6::8]
     ch7 = np.fromstring(data,dtype=np.int16)[7::8]
 
-    tmp = np.vstack(ch0, ch1, ch2, ch3, ch4, ch5, ch6, ch7)
+    tmp = np.vstack((ch0, ch1, ch2, ch3, ch4, ch5, ch6, ch7))
     myArray = np.append(myArray, tmp)
 
 print("* done recording")
