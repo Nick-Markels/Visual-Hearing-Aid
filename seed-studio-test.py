@@ -31,6 +31,7 @@ for i in range(0, int(RESPEAKER_RATE / CHUNK * RECORD_SECONDS)):
     a = np.fromstring(data,dtype=np.int16)[0::8]
     frames.append(a.tostring())
 
+frames = np.array(frames)
 print("* done recording")
 
 stream.stop_stream()
