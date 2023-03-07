@@ -35,7 +35,6 @@ for i in range(0, int(RESPEAKER_RATE / CHUNK * RECORD_SECONDS)):
     my_list = np.append(my_list, a)
 
 print("* done recording")
-my_list = my_list.reshape((RESPEAKER_CHANNELS, CHUNK))
 
 stream.stop_stream()
 stream.close()
@@ -43,6 +42,8 @@ p.terminate()
 
 fig, ax = plt.subplots(8)
 print("Shape of the data array: ", my_list.shape)
+my_list = my_list.reshape((RESPEAKER_CHANNELS, CHUNK))
+
 for i in range(my_list.shape[0]):
     ax.plot(my_list[i], label="Channel {}".format(i+1))
 
