@@ -1,7 +1,7 @@
 import pyaudio
 import wave
 import numpy as np
-import matplotlib as plt
+import matplotlib.pyplot as plt
 
 RESPEAKER_RATE = 16000
 RESPEAKER_CHANNELS = 8
