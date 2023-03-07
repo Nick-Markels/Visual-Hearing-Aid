@@ -38,8 +38,8 @@ stream.close()
 p.terminate()
 
 fig, ax = plt.subplots(8)
-print("a[0] shape: " + a.shape[0])
-print("a[1] shape: " + a.shape[1])
+print("a[0] shape: " + str(a.shape[0]))
+print("a[1] shape: " + str(a.shape[1]))
 for i in range(a.shape[0]):
     ax.plot(a[i], label="Channel {}".format(i+1))
 
