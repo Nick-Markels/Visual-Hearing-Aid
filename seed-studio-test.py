@@ -1,6 +1,7 @@
 import pyaudio
 import wave
 import numpy as np
+import matplotlib.pyplot as plt
 
 RESPEAKER_RATE = 16000
 RESPEAKER_CHANNELS = 8
@@ -10,6 +11,7 @@ RESPEAKER_INDEX = 2  # refer to input device id
 CHUNK = 1024
 RECORD_SECONDS = 3
 WAVE_OUTPUT_FILENAME = "output.wav"
+PNG_OUTPUT_FILENAME = "output.png"
 
 p = pyaudio.PyAudio()
 
@@ -26,9 +28,9 @@ frames = []
 
 for i in range(0, int(RESPEAKER_RATE / CHUNK * RECORD_SECONDS)):
     data = stream.read(CHUNK)
-    # extract channel 0 data from 8 channels, if you want to extract channel 1, please change to [1::8]
-    a = np.fromsbyte(data,dtype=np.int16)[0::8]
-    frames.append(a.tostring())
+    # extract all 8 channels using numpy
+    a = np.fromstring(data, dtype=np.int16)
+    frames.append(a)
 
 print("* done recording")
 
@@ -36,8 +38,23 @@ stream.stop_stream()
 stream.close()
 p.terminate()
 
+# create a new figure
+fig, axs = plt.subplots(RESPEAKER_CHANNELS, 1, figsize=(10, 15), sharex=True)
+
+# plot each channel on its own subplot
+for i in range(RESPEAKER_CHANNELS):
+    axs[i].plot(frames[-1][i::RESPEAKER_CHANNELS])
+    axs[i].set_ylabel(f"Channel {i+1}")
+
+# set the x-label on the bottom subplot
+axs[-1].set_xlabel("Time (samples)")
+
+# save the figure to a PNG file
+plt.savefig(PNG_OUTPUT_FILENAME)
+
+# write the recorded audio to a WAV file
 wf = wave.open(WAVE_OUTPUT_FILENAME, 'wb')
-wf.setnchannels(1)
+wf.setnchannels(RESPEAKER_CHANNELS)
 wf.setsampwidth(p.get_sample_size(p.get_format_from_width(RESPEAKER_WIDTH)))
 wf.setframerate(RESPEAKER_RATE)
 wf.writeframes(b''.join(frames))
