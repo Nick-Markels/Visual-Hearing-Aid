@@ -52,9 +52,8 @@ axs[-1].set_xlabel("Time (samples)")
 # save the figure to a PNG file
 plt.savefig(PNG_OUTPUT_FILENAME)
 
-# write the recorded audio to a WAV file
 wf = wave.open(WAVE_OUTPUT_FILENAME, 'wb')
-wf.setnchannels(RESPEAKER_CHANNELS)
+wf.setnchannels(1)
 wf.setsampwidth(p.get_sample_size(p.get_format_from_width(RESPEAKER_WIDTH)))
 wf.setframerate(RESPEAKER_RATE)
 wf.writeframes(b''.join(frames))
