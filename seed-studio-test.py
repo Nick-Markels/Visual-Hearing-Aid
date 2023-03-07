@@ -41,8 +41,9 @@ stream.close()
 p.terminate()
 
 fig, ax = plt.subplots(8)
+length3 = int(my_list.shape / RESPEAKER_CHANNELS)
 print("Shape of the data array: ", my_list.shape)
-my_list = my_list.reshape((RESPEAKER_CHANNELS, int(my_list.shape / RESPEAKER_CHANNELS)))
+my_list = my_list.reshape((RESPEAKER_CHANNELS, length3))
 
 for i in range(my_list.shape[0]):
     ax.plot(my_list[i], label="Channel {}".format(i+1))
