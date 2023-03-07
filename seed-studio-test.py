@@ -38,9 +38,9 @@ stream.close()
 p.terminate()
 
 fig, ax = plt.subplots(8)
-print("Shape of the data array: ", a.shape)
-for i in range(a.shape[0]):
-    ax.plot(a[i], label="Channel {}".format(i+1))
+print("Shape of the data array: ", frames.shape)
+for i in range(frames.shape[0]):
+    ax.plot(frames[i], label="Channel {}".format(i+1))
 
 fig.savefig("p.png")
 
