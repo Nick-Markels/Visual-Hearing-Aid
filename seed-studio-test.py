@@ -44,7 +44,7 @@ fig, axs = plt.subplots(RESPEAKER_CHANNELS, 1, figsize=(10, 15), sharex=True)
 # plot each channel on its own subplot
 for i in range(RESPEAKER_CHANNELS):
     axs[i].plot(frames[-1][i::RESPEAKER_CHANNELS])
-    axs[i].set_ylabel(f"Channel {i+1}")
+    axs[i].set_ylabel("Channel {}".format(i+1))
 
 # set the x-label on the bottom subplot
 axs[-1].set_xlabel("Time (samples)")
