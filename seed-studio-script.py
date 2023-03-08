@@ -27,7 +27,7 @@ myArray = []
 myArray = np.array(myArray)
 
 while True:
-    data = stream.read(CHUNK)
+    data = stream.read(CHUNK, exception_on_overflow = False)
     frames.append(data)
     # extract channel 0 data from 8 channels, if you want to extract channel 1, please change to [1::8]
     ch0 = np.fromstring(data,dtype=np.int16)[0::8]
@@ -44,6 +44,6 @@ while True:
     myArray = tmp
 
     fig, axs = plt.subplots(8, sharex=True)
-    #for i in range(8):
-    axs[0].plot(myArray[0])
+    for i in range(8):
+        axs[i].plot(myArray[i])
 
