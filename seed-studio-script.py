@@ -27,6 +27,12 @@ myArray = []
 myArray = np.array(myArray)
 fig, axs = plt.subplots(8, sharex=True)
 
+# create empty Line2D objects for each subplot
+lines = []
+for i in range(8):
+    line, = axs[i].plot([], [])
+    lines.append(line)
+
 while True:
     data = stream.read(CHUNK, exception_on_overflow = False)
     frames.append(data)
@@ -45,8 +51,10 @@ while True:
     myArray = tmp
 
     
+   # update data in each subplot
     for i in range(8):
-        axs[i].plot(myArray[i])
-        plt.show()
-        plt.pause(0.001)
-
+        lines[i].set_data(np.arange(len(myArray[i])), myArray[i])
+    
+    # redraw the plot
+    plt.draw()
+    plt.pause(0.001)
