@@ -25,6 +25,7 @@ print("* recording")
 frames = []
 myArray = []
 myArray = np.array(myArray)
+fig, axs = plt.subplots(8, sharex=True)
 
 while True:
     data = stream.read(CHUNK, exception_on_overflow = False)
@@ -43,8 +44,9 @@ while True:
     #myArray = np.hstack((myArray, tmp))
     myArray = tmp
 
-    fig, axs = plt.subplots(8, sharex=True)
+    
     for i in range(8):
         axs[i].plot(myArray[i])
+        plt.show()
         plt.pause(0.001)
 
