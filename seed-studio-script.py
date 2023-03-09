@@ -47,6 +47,5 @@ while True:
     
     for i in range(8):
         axs[i].plot(myArray[i])
-        plt.show()
         plt.pause(0.001)
 
