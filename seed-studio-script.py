@@ -44,8 +44,8 @@ while True:
     #myArray = np.hstack((myArray, tmp))
     myArray = tmp
 
-    
+    plt.clf()
     for i in range(8):
         axs[i].plot(myArray[i])
-        plt.pause(0.001)
+    plt.pause(0.001)
 
