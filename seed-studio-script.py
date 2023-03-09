@@ -2,7 +2,6 @@ import pyaudio
 import wave
 import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib.animation as animation
 
 RESPEAKER_RATE = 16000
 RESPEAKER_CHANNELS = 8 
@@ -28,13 +27,6 @@ myArray = []
 myArray = np.array(myArray)
 fig, axs = plt.subplots(8, sharex=True)
 
-
-def update(myArray):
-    for i in range(8):
-        axs[i].plot(myArray[i])
-        #plt.show()
-        #plt.pause(0.001)
-
 while True:
     data = stream.read(CHUNK, exception_on_overflow = False)
     frames.append(data)
@@ -52,10 +44,8 @@ while True:
     #myArray = np.hstack((myArray, tmp))
     myArray = tmp
 
-    ani = animation.FuncAnimation(fig, update, blit=True, interval=1000)
-    plt.show()
-
-
     
-    
+    for i in range(8):
+        axs[i].plot(myArray[i])
+        plt.pause(0.001)
 
