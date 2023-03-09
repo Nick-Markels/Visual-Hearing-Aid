@@ -46,7 +46,7 @@ while True:
 
    
     for i in range(8):
-        plt.clear(i)
+        axs[i].clear()
         axs[i].plot(myArray[i])
     plt.pause(0.001)
 
