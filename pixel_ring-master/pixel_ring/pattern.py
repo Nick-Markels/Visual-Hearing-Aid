@@ -56,6 +56,13 @@ class Echo(object):
 
             position += step
 
+    def turn_on_one_by_one(self, delay=0.1):
+        for i in range(self.pixels_number):
+            self.pixels = [0] * 4 * self.pixels_number
+            self.pixels[i * 4 + 3] = self.brightness
+            self.show(self.pixels)
+            time.sleep(delay)
+
     def off(self):
         self.show([0] * 4 * 12)
 

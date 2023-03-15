@@ -18,13 +18,15 @@ if __name__ == '__main__':
     while True:
 
         try:
-            pixel_ring.wakeup()
             time.sleep(3)
-            pixel_ring.think()
-            time.sleep(3)
-            pixel_ring.speak()
-            time.sleep(6)
-            pixel_ring.off()
+            pixel_ring.turn_on_one_by_one()
+            #pixel_ring.wakeup()
+            #time.sleep(3)
+            #pixel_ring.think()
+            #time.sleep(3)
+            #pixel_ring.speak()
+            #time.sleep(6)
+            #pixel_ring.off()
             time.sleep(3)
         except KeyboardInterrupt:
             break
