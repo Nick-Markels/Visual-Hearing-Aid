@@ -24,3 +24,6 @@ class PixelRing(object):
 
     def off(self):
         pass
+
+    def turn_on_one_by_one(self):
+        pass
