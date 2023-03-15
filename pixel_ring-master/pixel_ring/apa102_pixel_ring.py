@@ -60,6 +60,9 @@ class PixelRing(object):
     def off(self):
         self.put(self.pattern.off)
 
+    def turn_on_one_by_one(self):
+        self.put(self.pattern.turn_on_one_by_one)
+
     def put(self, func):
         self.pattern.stop = True
         self.queue.put(func)
