@@ -3,6 +3,7 @@ import numpy as np
 import os
 import subprocess
 import threading
+from scipy.fft import fft, fftfreq
 
 #Designate location of where audio FIFO is located
 pipe_path = '/tmp/audio_pipe'
@@ -43,7 +44,8 @@ with open("/tmp/audio_pipe", "rb") as f:
         audio_array = np.frombuffer(audio_data, dtype=np.int32)
         left_channel = audio_array[::2]
         right_channel = audio_array[1::2]
-
+        left_fft = np.fft.fft(left_channel)
+        right_fft = np.fft.fft(right_channel)
         #phase angle alg here - used for LED output decisions
         
         #get average sound
@@ -69,6 +71,9 @@ with open("/tmp/audio_pipe", "rb") as f:
         
         #if the audio value is extremely sharp, color differently
         #plot out the information
+        t = np.linspace(0,1,1024)
+        left_mag = np.abs(left_fft)
+        left_freq = np.fft.fftfreq(len(left_channel), t[0] - t[1])
         #use phase-angle to get the direction of the sound
         if avg_sound >= SHARP:
             axs[0].clear()
