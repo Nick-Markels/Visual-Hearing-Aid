@@ -3,6 +3,21 @@ import wave
 import numpy as np
 import matplotlib.pyplot as plt
 
+
+
+
+#init decision alg variables
+threshold = 0
+timeSinceLast = 0
+noiseSlope = 0
+totalNoise = 0
+sampleNum = 0
+MAX_THRESH_PERIOD = 3
+SHARP = 60
+DEC_VAL = 1
+TIME_LIT = 0.01
+SOUND_STABILIZER= 200000000000000
+
 #starting values
 RESPEAKER_RATE = 16000
 RESPEAKER_CHANNELS = 8 
@@ -48,10 +63,30 @@ while True:
     #creates array of data from 8 channels
     #myArray8 = np.vstack((ch0, ch1, ch2, ch3, ch4, ch5, ch6, ch7))
     myArray = np.vstack((ch0, ch1, ch2, ch3, ch4, ch5))
+
+    #Calculate FFT
     fftArray = np.fft.fft(myArray)
 
+    #Calculate 
+    freqs = np.fft.fftfreq(1024, d = 1024)
 
-   
+
+    #Phase angle calculation
+
+    #decision alg goes here
+
+    #Calculate average sound
+    avg = np.average(myArray)
+    avgScaler = np.product(avg)
+    avgScaler = avgScaler/SOUND_STABILIZER
+
+     #time since last noise - if longer than threshold, lower threshold
+    if timeSinceLast > MAX_THRESH_PERIOD:
+        threshold -= DEC_VAL
+
+    timeSinceLast += TIME_LIT
+
+
    #plots data
     for i in range(8):
         axs[i].clear()
