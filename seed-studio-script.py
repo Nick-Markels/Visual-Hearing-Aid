@@ -46,7 +46,11 @@ while True:
     ch7 = np.fromstring(data,dtype=np.int16)[7::8]
 
     #creates array of data from 8 channels
-    myArray = np.vstack((ch0, ch1, ch2, ch3, ch4, ch5, ch6, ch7))
+    #myArray8 = np.vstack((ch0, ch1, ch2, ch3, ch4, ch5, ch6, ch7))
+    myArray = np.vstack((ch0, ch1, ch2, ch3, ch4, ch5))
+    fftArray = np.fft.fft(myArray)
+
+
    
    #plots data
     for i in range(8):

@@ -20,7 +20,7 @@ if __name__ == '__main__':
         try:
             time.sleep(3)
             pixel_ring.turn_on_one_by_one()
-            #pixel_ring.wakeup()
+            pixel_ring.wakeup()
             #time.sleep(3)
             #pixel_ring.think()
             #time.sleep(3)
