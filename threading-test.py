@@ -23,6 +23,7 @@ fig, axs = plt.subplots(2, sharex=True)
 #set up frequency
 N = 1024
 freqs = np.fft.fftfreq(N, d = 1024)
+
 with open("/tmp/audio_pipe", "rb") as f:
     while True:
         print("\/")
@@ -30,7 +31,8 @@ with open("/tmp/audio_pipe", "rb") as f:
         audio_array = np.frombuffer(audio_data, dtype=np.int32)
         left_channel = audio_array[::2]
         right_channel = audio_array[1::2]
-        t = np.linspace(0,1,1024)
+
+       # t = np.linspace(0,1,1024)
         left_fft = np.fft.fft(left_channel)
         right_fft = np.fft.fft(right_channel)
         left_mag = np.abs(left_fft)
