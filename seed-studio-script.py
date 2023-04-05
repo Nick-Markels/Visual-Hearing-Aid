@@ -17,6 +17,8 @@ SHARP = 60
 DEC_VAL = 1
 TIME_LIT = 0.01
 SOUND_STABILIZER= 200000000000000
+ANGLE = 60
+MICS = 6
 
 #starting values
 RESPEAKER_RATE = 16000
@@ -72,6 +74,53 @@ while True:
 
 
     #Phase angle calculation
+    results = []
+        
+    #loop through all the mics
+    for mic in range(MICS):
+        #compare mic to mic+1 an mic -1
+        below = mic - 1
+        above = mic + 1
+        if below < 0:
+            below = MICS - 1
+        if above == MICS - 1:
+            above = 0
+        
+        #assume myArray from studio-seed is here
+        belowArr = myArray[below]
+        micArr = myArray[mic]
+        aboveArr = myArray[above]
+        
+        #multiply the arrays
+        belowMult = np.multiply(belowArr, micArr)
+        print(belowMult.shape)
+        belowMult = np.reshape(belowMult, (-1, 1))
+        print(belowMult.shape)
+        aboveMult = np.multiply(micArr, aboveArr)
+        print(aboveMult.shape)
+        aboveMult = np.reshape(aboveMult, (-1, 1))
+        print(aboveMult.shape)
+
+        #transpose
+        # belowMult = np.transpose(belowMult)
+        
+        #cross product of below x mic and above x mic
+        crossArr = np.cross(belowMult, aboveMult)
+
+        cross = crossArr.reshape(-1)
+        
+        #neglect the z angle
+        a = crossArr[0]
+        b = crossArr[1]
+        
+        #round the result to the nearest LED (this is which of the three it's most like)
+        results[mic] = round(np.arctan(b/a) *  ((360/MICS) / math.pi))
+    
+    #the LED with the most occurances is the result
+    counter = Counter(results)
+    choiceLED = counter.most_common(1)[0][0]
+    
+    #OUTPUT TO CHOICE LEDS HERE
 
     #decision alg goes here
 
