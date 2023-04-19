@@ -3,6 +3,7 @@ import numpy as np
 import os
 import subprocess
 import threading
+import scipy.signal as signal
 
 #Designate location of where audio FIFO is located
 pipe_path = '/tmp/audio_pipe'
@@ -36,6 +37,23 @@ DEC_VAL = 1
 TIME_LIT = 0.01
 SOUND_STABILIZER= 200000000000000
 
+#Define the positions of the microphones in the array
+mic_positions = np.array([1/2, np.sqrt(3)/2], [1,0], [1/2, -(np.sqrt(3)/2)], [-1/2, -(np.sqrt(3))/2], [-1,0], [-1/2, np.sqrt(3)/2])
+
+# Initialize variables for recording and processing audio data in chunks
+fs = 44100  # Sampling frequency
+duration = chunk_size / fs  # Duration of each chunk in seconds
+n_samples = chunk_size * len(mic_positions)
+signals = np.zeros((len(mic_positions), n_samples))
+xcorr = np.zeros((len(mic_positions), len(mic_positions), n_samples))
+delay_times = np.zeros((len(mic_positions), len(mic_positions)))
+speed_of_sound = 343  # Speed of sound in meters per second
+A = np.zeros((len(mic_positions) - 1, 2))
+b = np.zeros((len(mic_positions) - 1,))
+estimated_direction = None
+estimated_distance = None
+sound_source_locations = []
+
 with open("/tmp/audio_pipe", "rb") as f:
     while True:
         print("\/")
@@ -43,6 +61,39 @@ with open("/tmp/audio_pipe", "rb") as f:
         audio_array = np.frombuffer(audio_data, dtype=np.int32)
         left_channel = audio_array[::2]
         right_channel = audio_array[1::2]
+
+        # Add new samples to the end of each audio signal buffer
+        for i in range(len(mic_positions)):
+            signals[i, :-chunk_size] = signals[i, chunk_size:]
+            signals[i, -chunk_size:] = audio_array[i::len(mic_positions)]
+
+        # Calculate the cross-correlation between each pair of microphones
+        for i in range(len(mic_positions)):
+            for j in range(len(mic_positions)):
+                if i != j:
+                    xcorr[i, j, :] = signal.correlate(signals[i, :], signals[j, :], mode='same')
+
+        # Find the delay times between each pair of microphones
+        for i in range(len(mic_positions)):
+            for j in range(len(mic_positions)):
+                if i != j:
+                    peak_index = np.argmax(np.abs(xcorr[i, j, :]))
+                    delay_times[i, j] = (peak_index - n_samples // 2) / fs
+
+        # Estimate the direction of the sound source using triangulation
+        if np.any(delay_times != 0):
+            for i in range(len(mic_positions) - 1):
+                A[i, :] = mic_positions[i + 1, :] - mic_positions[0, :]
+                b[i] = (delay_times[i + 1, 0] - delay_times[0, 0]) * speed_of_sound
+            estimated_direction, estimated_distance = np.linalg.lstsq(A, b, rcond=None)[0]
+            estimated_direction = np.rad2deg(np.arctan2(estimated_direction[1], estimated_direction[0]))
+
+        # Calculate the x and y coordinates of the sound source
+        if estimated_direction is not None:
+            x = estimated_distance * np.cos(np.deg2rad(estimated_direction))
+            y = estimated_distance * np.sin(np.deg2rad(estimated_direction))
+            sound_source_locations.append((x,y))
+        
 
         #phase angle alg here - used for LED output decisions
         
